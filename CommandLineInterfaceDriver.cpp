@@ -61,7 +61,10 @@ void CommandLineInterfaceDriver::showWeatherForCity() {
     cout << endl;
 
     //display city data
-    this->weatherController->showSpecificCity(cityName);
+    bool error = this->weatherController->showSpecificCity(cityName);
+    if (error){
+        return;
+    }
 
     //ask if user wants to save to favorites
     string saveCity;

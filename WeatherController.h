@@ -14,7 +14,7 @@ public:
     WeatherController();
     ~WeatherController();
 
-    void showSpecificCity(std::string city);
+    bool showSpecificCity(std::string city);
     void setFavorite(std::string city);
     void showFavorites();
 

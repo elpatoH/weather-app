@@ -17,13 +17,21 @@ WeatherController::~WeatherController(){
 }
 
 //display data for specific city
-void WeatherController::showSpecificCity(std::string city){
+bool WeatherController::showSpecificCity(std::string city){
     std::string encodedCity = this->encodeCityName(city);
     //define url
     std::string url = "https://api.openweathermap.org/data/2.5/weather?q=" + encodedCity + "&appid=8a3b630c28355377800ceb05ba2e4e28";
 
     //make request
     nlohmann::json response = this->https->getRequest(url);
+
+    //if city not found
+    if (response["cod"] == "404"){
+        cout << "Sorry, city not found.\n";
+        cout << "Press any key to continue.";
+        cin.get();
+        return 1;
+    }
 
     try
     {
@@ -46,9 +54,9 @@ void WeatherController::showSpecificCity(std::string city){
     }
     catch (nlohmann::json::exception& e)
     {
-        throw std::runtime_error("Error: " + std::string(e.what()) + "\n");
+        throw std::runtime_error("Error in weather controller: " + std::string(e.what()) + "\n");
     }
-
+    return 0;
 }
 
 //given a city sets one of the 3 slots for favorite cities
@@ -77,10 +85,12 @@ void WeatherController::setFavorite(string city){
 void WeatherController::showFavorites(){
     for (int i = 0; i < this->favorites->size(); i++){
         if (this->favorites->at(i) != ""){
-            cout << "\nFavorite #" << i << ". ";
+            cout << "\nFavorite #" << i+1 << ". ";
             this->showSpecificCity(this->favorites->at(i));
         }
     }
+    cout << "\nPress any key to continue.";
+    cin.get();
 }
 
 //encodes the city string in case there is empty space for example "san diego" -> "san%20diego"
